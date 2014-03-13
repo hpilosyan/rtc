@@ -24,8 +24,8 @@ io.sockets.on("connection", function (socket) {
             console.log("AHA: ", callee_ice, callee_sdp);
 
             if (callee_ice && callee_sdp) {
-                socket.emit("setInfo", { "sdp": callee_sdp });
-                socket.emit("setInfo", { "candidate": callee_ice });
+                socket.emit("setInfo", JSON.stringify({ "sdp": callee_sdp }));
+                socket.emit("setInfo", JSON.stringify({ "candidate": callee_ice }));
 
                 clearInterval(handle);
             }
@@ -35,8 +35,8 @@ io.sockets.on("connection", function (socket) {
 
     socket.on("joinRoom", function(room_name) {
         console.log("HERE");
-        socket.emit("setInfo", { "sdp": caller_sdp });
-        socket.emit("setInfo", { "candidate": caller_ice });
+        socket.emit("setInfo", JSON.stringify({ "sdp": caller_sdp }));
+        socket.emit("setInfo", JSON.stringify({ "candidate": caller_ice }));
 
         /*
         var handle = setInterval(function() {
@@ -51,6 +51,7 @@ io.sockets.on("connection", function (socket) {
     });
 
     socket.on("sendDescription", function(data) {
+        data = JSON.parse(data);
         //console.log("SDP", data);
         if (data.isCaller) {
             caller_sdp = data.sdp;
@@ -60,6 +61,7 @@ io.sockets.on("connection", function (socket) {
     });
 
     socket.on("sendCandidate", function(data) {
+        data = JSON.parse(data);
         if (data.isCaller) {
             if (data.candidate)
                 caller_ice = data.candidate;

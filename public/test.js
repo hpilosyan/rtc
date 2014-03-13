@@ -22,7 +22,7 @@ function start(isCaller) {
 
     // send any ice candidates to the other peer
     pc.onicecandidate = function (evt) {
-        socket.emit('sendCandidate', { "candidate": evt.candidate, "isCaller": isCaller });
+        socket.emit('sendCandidate', JSON.stringify({ "candidate": evt.candidate, "isCaller": isCaller }));
     };
 
     // once remote stream arrives, show it in the remote video element
@@ -43,7 +43,7 @@ function start(isCaller) {
 
         function gotDescription(desc) {
             pc.setLocalDescription(desc);
-            socket.emit("sendDescription", { "sdp": desc, "isCaller": isCaller });
+            socket.emit("sendDescription", JSON.stringify({ "sdp": desc, "isCaller": isCaller }));
         }
 
     }, onError); // Error callback is required by Firefox
@@ -54,7 +54,7 @@ socket.on('setInfo', function (data) {
     if (!pc)
         start(false);
 
-    var signal = data;
+    var signal = JSON.parse(data);
     if (signal.sdp)
         pc.setRemoteDescription(new SessionDescription(signal.sdp));
     else
