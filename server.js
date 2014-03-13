@@ -9,7 +9,7 @@ app.configure(function(){
     app.use(express.static(path.join(__dirname, 'public')));
 });
 
-server.listen(7000);
+server.listen(Number(process.env.PORT || 7000));
 
 var room = null;
 var caller_ice = null;
