@@ -16,6 +16,7 @@ var sdpConstraints = {'mandatory': {
                         'OfferToReceiveAudio':true,
                         'OfferToReceiveVideo':true }
                     };
+
 // run start(true) to initiate a call
 function start(isCaller) {
     pc = new PeerConnection(ice);
@@ -57,8 +58,16 @@ socket.on('setInfo', function (data) {
     var signal = JSON.parse(data);
     if (signal.sdp)
         pc.setRemoteDescription(new SessionDescription(signal.sdp));
-    else
-        pc.addIceCandidate(new IceCandidate(signal.candidate));
+    else {
+        var candidates = signal.candidate;
+        for (var i=0, l=candidates.length; i <l; i++) {
+            if (candidates[i]) {
+                pc.addIceCandidate(new IceCandidate(candidates[i]));
+            }
+        }
+
+    }
+
 });
 
 $('#create_room').on('click', function() {
