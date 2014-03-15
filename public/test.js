@@ -72,18 +72,17 @@ socket.on('setInfo', function (data) {
         start(false);
 
     var signal = JSON.parse(data);
+    console.log(data);
     if (signal.sdp)
-        pc.setRemoteDescription(new SessionDescription(signal.sdp));
+        pc.setRemoteDescription(new SessionDescription(signal));
     else {
-        var candidates = signal.candidate;
+        var candidates = signal;
         for (var i=0, l=candidates.length; i <l; i++) {
             if (candidates[i]) {
                 pc.addIceCandidate(new IceCandidate(candidates[i]));
             }
         }
-
     }
-
 });
 
 $('#create_room').on('click', function() {
@@ -101,7 +100,7 @@ $('#join_room').on('click', function() {
         return;
     }
     //start(false);
-    socket.emit('joinRoom');
+    socket.emit('joinRoom', $('#room_name').val());
     $('#room_management').hide();
     $('#in_room').show();
 });
